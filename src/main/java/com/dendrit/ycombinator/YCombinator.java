@@ -1,6 +1,7 @@
 package com.dendrit.ycombinator;
 
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 interface Fix<T, R> extends Function<Fix<T, R>, Function<T, R>> {
 
@@ -9,7 +10,7 @@ interface Fix<T, R> extends Function<Fix<T, R>, Function<T, R>> {
 public class YCombinator {
 
     public static void main(String[] args) {
-        Function<Function<Integer, Integer>, Function<Integer, Integer>> ctor = self -> n -> {
+        UnaryOperator<Function<Integer, Integer>> ctor = self -> n -> {
             if (n == 0) {
                 return 1;
             } else {
@@ -20,7 +21,7 @@ public class YCombinator {
         System.out.println(factorial.apply(10));
     }
 
-    public static <T, R> Function<T, R> Y(Function<Function<T, R>, Function<T, R>> ctor) {
+    public static <T, R> Function<T, R> Y(UnaryOperator<Function<T, R>> ctor) {
         Fix<T, R> fix = g -> g.apply(g);
         return fix.apply(g -> ctor.apply(n -> g.apply(g).apply(n)));
     }
